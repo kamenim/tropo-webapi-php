@@ -2,7 +2,7 @@
     "name": "synesisinc/tropo-webapi-php",
     "type": "library",
     "description": "Breathing new life into the Tropo PHP Web API",
-    "keywords": ["tropo", "sms", "voip", "php"],
+    "keywords": ["tropo", "php", "sms", "voip", "ivr"],
     "homepage": "https://github.com/synesisinc/tropo-webapi-php",
     "license": "MIT",
     "authors": [
