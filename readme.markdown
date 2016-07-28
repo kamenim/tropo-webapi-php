@@ -23,7 +23,7 @@ Usage
 Answer the phone, say something, and hang up.
 
     <?php
-        $tropo = new Tropo();
+        $tropo = new \Tropo\Tropo();
     
         // Use Tropo's text to speech to say a phrase.
         $tropo->say('Yes, Tropo is this easy.');
@@ -34,7 +34,7 @@ Answer the phone, say something, and hang up.
 Asking for input.
 
     <?php
-        $tropo = new Tropo();
+        $tropo = new \Tropo\Tropo();
     
         // Ask the user a question
         $tropo->ask('What is your favorite programming language?', array(
