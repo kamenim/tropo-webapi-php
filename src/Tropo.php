@@ -471,7 +471,10 @@
         public function say ($say, SayParameters $params = null) {
             if (!is_object($say)) {
                 $value = $say;
-                $say   = new Say($value, $params->as, $params->event, (!empty($params->voice) ? $params->voice : $this->_voice), $params->allowSignals);
+                if (is_null($params)) {
+                    $params = new SayParameters();
+                }
+                $say = new Say($value, $params->as, $params->event, (!empty($params->voice) ? $params->voice : $this->_voice), $params->allowSignals);
             }
             $this->say = array(sprintf('%s', $say));
         }
