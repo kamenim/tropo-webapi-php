@@ -11,37 +11,40 @@
      */
     namespace Tropo\Action;
 
-    use Tropo\Helper\SayAs;
-
     /**
      * When the current session is a voice channel this key will either play a message or an audio file from a URL.
      * In the case of an text channel it will send the text back to the user via instant messaging or SMS.
      *
      * @property null|string       event
      * @property string            value
+     * @property null|string       as
      * @property null|string       voice
-     * @property array|null|string allowSignals
-     * @property null|SayAs        as
+     * @property null|string|array allowSignals
      *
-     * @package TropoPHP_Support
+     * @package Tropo\Action
      *
      */
     class Say extends BaseClass {
 
+        /** @var null|string|array */
         private $_allowSignals;
+        /** @var null|string */
         private $_as;
+        /** @var null|string */
         private $_event;
+        /** @var string */
         private $_value;
+        /** @var null|string */
         private $_voice;
 
         /**
-         * Class constructor
+         * Say constructor.
          *
-         * @param string       $value
-         * @param SayAs        $as
-         * @param string       $event
-         * @param string       $voice
-         * @param string|array $allowSignals
+         * @param string            $value
+         * @param null|string       $as
+         * @param null|string       $event
+         * @param null|string       $voice
+         * @param null|string|array $allowSignals
          */
         public function __construct ($value, $as = null, $event = null, $voice = null, $allowSignals = null) {
             $this->_value        = $value;
@@ -57,12 +60,12 @@
          * @return string
          */
         public function __toString () {
-            if (isset($this->_event)) {
-                $this->event = $this->_event;
-            }
             $this->value = $this->_value;
             if (isset($this->_as)) {
                 $this->as = $this->_as;
+            }
+            if (isset($this->_event)) {
+                $this->event = $this->_event;
             }
             if (isset($this->_voice)) {
                 $this->voice = $this->_voice;

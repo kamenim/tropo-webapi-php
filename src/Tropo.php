@@ -16,10 +16,13 @@
     use Tropo\Action\Say;
     use Tropo\Action\BaseClass;
     use Tropo\Exception\TropoException;
+    use Tropo\Parameter\SayParameters;
 
     /**
      * The main Tropo WebAPI class.
      * The methods on this class can be used to invoke specific Tropo actions.
+     *
+     * @property string[] say
      *
      * @package TropoPHP
      * @see     https://www.tropo.com/docs/webapi/tropo.htm
@@ -27,26 +30,12 @@
      */
     class Tropo extends BaseClass {
 
-        /**
-         * The container for JSON actions.
-         *
-         * @var array
-         * @access private
-         */
+        /** @var string[]  The container for JSON actions. */
         public $tropo;
-        /**
-         * The language to use when rendering content.
-         *
-         * @var string
-         * @access private
-         */
+
+        /** @var  string  The language to use when rendering content. */
         private $_language;
-        /**
-         * The TTS voice to use when rendering content.
-         *
-         * @var string
-         * @access private
-         */
+        /** @var  string  The TTS voice to use when rendering content. */
         private $_voice;
 
         /**
@@ -78,7 +67,7 @@
          * @access private
          */
         public function __toString () {
-            // Remove voice and language so they do not appear in the rednered JSON.
+            // Remove voice and language so they do not appear in the rendered JSON.
             unset($this->_voice);
             unset($this->_language);
 
@@ -474,23 +463,15 @@
          * When the current session is a voice channel this key will either play a message or an audio file from a URL.
          * In the case of an text channel it will send the text back to the user via instant messaging or SMS.
          *
-         * @param string|Say $say
-         * @param array      $params
+         * @param string|Say                     $say
+         * @param \Tropo\Parameter\SayParameters $params
          *
          * @see https://www.tropo.com/docs/webapi/say.htm
          */
-        public function say ($say, Array $params = null) {
+        public function say ($say, SayParameters $params = null) {
             if (!is_object($say)) {
-                $p     = array('as', 'format', 'event', 'voice', 'allowSignals');
                 $value = $say;
-                foreach ($p as $option) {
-                    $$option = null;
-                    if (is_array($params) && array_key_exists($option, $params)) {
-                        $$option = $params[$option];
-                    }
-                }
-                $voice = isset($voice) ? $voice : $this->_voice;
-                $say   = new Say($value, $as, $event, $voice, $allowSignals);
+                $say   = new Say($value, $params->as, $params->event, (!empty($params->voice) ? $params->voice : $this->_voice), $params->allowSignals);
             }
             $this->say = array(sprintf('%s', $say));
         }

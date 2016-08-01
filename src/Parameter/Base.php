@@ -22,7 +22,7 @@
             if (is_array($parameters)) {
                 foreach ($parameters as $parameter_key => $parameter_value) {
                     if (!property_exists($this, $parameter_key)) {
-                        throw new TropoParameterException(sprintf("Invalid parameter '%s' supplied during %s construction", get_class($this), $parameter_key));
+                        throw new TropoParameterException(sprintf("Invalid parameter '%s' supplied during construction of '%s'", get_class($this), $parameter_key));
                     }
 
                     $this->$parameter_key = $parameter_value;

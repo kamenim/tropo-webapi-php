@@ -170,7 +170,7 @@
 
         public function setHeaders ($headers) {
             $formattedHeaders = new Headers();
-            // headers don't exist on outboud calls
+            // headers don't exist on outbound calls
             // so only do this if there are headers
             if (is_object($headers)) {
                 foreach ($headers as $name => $value) {
