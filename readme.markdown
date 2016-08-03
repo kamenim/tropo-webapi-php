@@ -12,10 +12,12 @@ Requirements
 Installation
 ============
 
-Via [Composer](https://getcomposer.org/):
+  * Via [Composer](https://getcomposer.org/):
 
-  * Stable: `composer require synesisinc/tropo-webapi-php`
-  * Development: `composer require synesisinc/tropo-webapi-php 2.0.*@dev`
+    * Stable: `composer require synesisinc/tropo-webapi-php`
+    * Development: `composer require synesisinc/tropo-webapi-php 2.0.*@dev`
+    
+  * Or, download/clone github project from: [https://github.com/synesisinc/tropo-webapi-php.git](https://github.com/synesisinc/tropo-webapi-php.git) and `require /path/to/tropo-webapi-php/autoload.php`
 
 Usage
 =====
