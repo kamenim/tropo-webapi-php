@@ -61,16 +61,16 @@
          */
         public function __toString () {
             $this->value = $this->_value;
-            if (isset($this->_as)) {
+            if (!empty($this->_as)) {
                 $this->as = $this->_as;
             }
-            if (isset($this->_event)) {
+            if (!empty($this->_event)) {
                 $this->event = $this->_event;
             }
-            if (isset($this->_voice)) {
+            if (!empty($this->_voice)) {
                 $this->voice = $this->_voice;
             }
-            if (isset($this->_allowSignals)) {
+            if (!empty($this->_allowSignals)) {
                 $this->allowSignals = $this->_allowSignals;
             }
 

@@ -14,7 +14,14 @@
     /**
      * Adds an event callback so that your application may be notified when a particular event occurs.
      *
-     * @package TropoPHP_Support
+     * @property null|string event
+     * @property null|string next
+     * @property null|string say
+     * @property null|string voice
+     * @property null|string ask
+     * @property null|string message
+     *
+     * @package Tropo\Action
      *
      */
     class On extends BaseClass {
@@ -31,12 +38,16 @@
         /**
          * Class constructor
          *
-         * @param string $event
-         * @param string $next
-         * @param Say    $say
-         * @param string $voice
+         * @param string                $event
+         * @param string                $next
+         * @param \Tropo\Action\Say     $say
+         * @param string                $voice
+         * @param \Tropo\Action\Ask     $ask
+         * @param \Tropo\Action\Message $message
+         * @param \Tropo\Action\Wait    $wait
+         * @param string                $order
          */
-        public function __construct ($event = null, $next = null, Say $say = null, $voice = null, $ask = null, \Tropo\Action\Message $message = null, Wait $wait = null, $order = null) {
+        public function __construct ($event = null, $next = null, Say $say = null, $voice = null, $ask = null, Message $message = null, Wait $wait = null, $order = null) {
             $this->_event   = $event;
             $this->_next    = $next;
             $this->_say     = isset($say) ? sprintf('%s', $say) : null;

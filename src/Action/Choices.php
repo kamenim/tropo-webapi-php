@@ -14,11 +14,11 @@
     /**
      * Defines the input to be collected from the user.
      *
-     * @property null|string value
-     * @property null|string mode
-     * @property null|string terminator
+     * @property string      value          This is the grammar which determines the type of expected data.
+     * @property null|string mode           Only applies to the voice channel and can be either 'speech', 'dtmf', or 'any'.
+     * @property null|string terminator     This is the touch-tone key (also known as "DTMF digit") that indicates the end of input.
      *
-     * @package TropoPHP_Support
+     * @package Tropo\Action
      */
     class Choices extends BaseClass {
 
@@ -27,13 +27,13 @@
         private $_value;
 
         /**
-         * Class constructor
+         * Choices constructor.
          *
-         * @param string $value
-         * @param string $mode
-         * @param string $terminator
+         * @param string      $value
+         * @param null|string $mode
+         * @param null|string $terminator
          */
-        public function __construct ($value = null, $mode = null, $terminator = null) {
+        public function __construct ($value, $mode = null, $terminator = null) {
             $this->_value      = $value;
             $this->_mode       = $mode;
             $this->_terminator = $terminator;

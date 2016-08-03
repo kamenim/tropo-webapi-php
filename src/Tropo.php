@@ -13,9 +13,11 @@
 
     use Exception;
     use Tropo\Action\Ask;
+    use Tropo\Action\On;
     use Tropo\Action\Say;
     use Tropo\Action\BaseClass;
     use Tropo\Exception\TropoException;
+    use Tropo\Parameter\AskParameters;
     use Tropo\Parameter\SayParameters;
 
     /**
@@ -23,6 +25,7 @@
      * The methods on this class can be used to invoke specific Tropo actions.
      *
      * @property string[] say
+     * @property string[] on
      *
      * @package TropoPHP
      * @see     https://www.tropo.com/docs/webapi/tropo.htm
@@ -49,15 +52,16 @@
 
         /**
          * Allows undefined methods to be called.
-         * This method is invloked by Tropo class methods to add action items to the Tropo array.
+         * This method is invoked by Tropo class methods to add action items to the Tropo array.
          *
          * @param string $name
          * @param mixed  $value
          *
-         * @access private
+         * @throws \Tropo\Exception\TropoException
          */
         public function __set ($name, $value) {
-            array_push($this->tropo, array($name => $value));
+            throw new TropoException("Please stop using this magic method - instead, use the _load_action() method");
+            //array_push($this->tropo, array($name => $value));
         }
 
         /**
@@ -81,55 +85,46 @@
          * The ask method allows for collecting input using either speech
          * recognition or DTMF (also known as Touch Tone). You can either
          * pass in a fully-formed Ask object or a string to use as the
-         * prompt and an array of parameters.
+         * prompt and an ask parameters object.
          *
-         * @param string|Ask $ask
-         * @param array      $params
+         * @param string|\Tropo\Action\Ask       $ask
+         * @param \Tropo\Parameter\AskParameters $params
          *
          * @see https://www.tropo.com/docs/webapi/ask.htm
          */
-        public function ask ($ask, Array $params = null) {
+        public function ask ($ask, $params = null) {
             if (!is_object($ask)) {
-                $p = array(
-                    'as',
-                    'event',
-                    'voice',
-                    'attempts',
-                    'bargein',
-                    'minConfidence',
-                    'name',
-                    'required',
-                    'timeout',
-                    'allowSignals',
-                    'recognizer',
-                    'interdigitTimeout',
-                    'sensitivity',
-                    'speechCompleteTimeout',
-                    'speechIncompleteTimeout'
+                if (is_null($params)) {
+                    $params = new AskParameters();
+                }
+                // Set voice with default fallback
+                $voice = !empty($params->getVoice()) ? $params->getVoice() : (isset($this->_voice) ? $this->_voice : null);
+
+                // If say events were passed in, add them to the Ask's say array
+                $say = (!empty($params->getSayEvents())) ? $params->getSayEvents() : array();
+
+                // Add the main Ask wording to the say array
+                $say[] = new Say($ask);
+
+                $ask = new Ask(
+                    $params->getChoices(),
+                    $params->getAttempts(),
+                    $params->getBargein(),
+                    $params->getMinConfidence(),
+                    $params->getName(),
+                    $params->getRequired(),
+                    $say,
+                    $params->getTimeout(),
+                    $voice,
+                    $params->getAllowSignals(),
+                    $params->getRecognizer(),
+                    $params->getInterdigitTimeout(),
+                    $params->getSensitivity(),
+                    $params->getSpeechCompleteTimeout(),
+                    $params->getSpeechIncompleteTimeout()
                 );
-                foreach ($p as $option) {
-                    $$option = null;
-                    if (is_array($params) && array_key_exists($option, $params)) {
-                        $$option = $params[$option];
-                    }
-                }
-                if (is_array($event)) {
-                    // If an event was passed in, add the events to the Ask
-                    foreach ($event as $e => $val) {
-                        $say[] = new Say($val, $as, $e, $voice);
-                    }
-                }
-                $say[]                = new Say($ask, $as, null, $voice);
-                $params["mode"]       = isset($params["mode"]) ? $params["mode"] : null;
-                $params["dtmf"]       = isset($params["dtmf"]) ? $params["dtmf"] : null;
-                $params["terminator"] = isset($params["terminator"]) ? $params["terminator"] : null;
-                if (!isset($voice) && isset($this->_voice)) {
-                    $voice = $this->_voice;
-                }
-                $choices = isset($params["choices"]) ? new Choices($params["choices"], $params["mode"], $params["terminator"]) : null;
-                $ask     = new Ask($attempts, $bargein, $choices, $minConfidence, $name, $required, $say, $timeout, $voice, $allowSignals, $recognizer, $interdigitTimeout, $sensitivity, $speechCompleteTimeout, $speechIncompleteTimeout);
             }
-            $this->ask = sprintf('%s', $ask);
+            $this->_load_action('ask', sprintf('%s', $ask));
         }
 
         /**
@@ -331,23 +326,25 @@
          * Adds an event callback so that your application may be notified when a particular event occurs.
          * Possible events are: "continue", "error", "incomplete" and "hangup".
          *
-         * @param array $on
+         * @param \Tropo\Action\On|\Tropo\Parameter\OnParameters $on
+         *
+         * @throws \Tropo\Exception\TropoException
          *
          * @see      https://www.tropo.com/docs/webapi/on.htm
          */
         public function on ($on) {
-            if (!is_object($on) && is_array($on)) {
-                $params = $on;
-                if ((array_key_exists('say', $params) && ((array_key_exists('voice', $params) || isset($this->_voice))))) {
-                    $v   = isset($params["voice"]) ? $params["voice"] : $this->_voice;
-                    $say = new Say($params["say"], null, null, $v);
-                } else {
-                    $say = (array_key_exists('say', $params)) ? new Say($params["say"]) : null;
-                }
-                $next = (array_key_exists('next', $params)) ? $params["next"] : null;
-                $on   = new On($params["event"], $next, $say);
+            if (!is_object($on)) {
+                throw new TropoException("Missing object input");
             }
-            $this->on = array(sprintf('%s', $on));
+            $class_type = get_class($on);
+            if ($class_type != 'Tropo\\Action\\On' && $class_type != 'Tropo\\Parameter\\OnParameters') {
+                throw new TropoException(sprintf("Must provide either an 'On' or 'OnParameters' object, '%s' provided instead", $class_type));
+            }
+
+            if ($class_type == 'Tropo\\Parameter\\OnParameters') {
+                $on = new On($on->getEvent(), (!empty($on->getNext()) ? $on->getNext() : null), ((is_object($on->getSay()) && get_class($on->getSay()) == 'Tropo\\Action\\Say') ? $on->getSay() : null));
+            }
+            $this->_load_action('on', array(sprintf('%s', $on)));
         }
 
         /**
@@ -468,15 +465,18 @@
          *
          * @see https://www.tropo.com/docs/webapi/say.htm
          */
-        public function say ($say, SayParameters $params = null) {
+        public function say ($say, $params = null) {
             if (!is_object($say)) {
-                $value = $say;
+                $value = sprintf("%s", $say);
                 if (is_null($params)) {
                     $params = new SayParameters();
                 }
-                $say = new Say($value, $params->as, $params->event, (!empty($params->voice) ? $params->voice : $this->_voice), $params->allowSignals);
+                // Set voice with default fallback
+                $voice = !empty($params->getVoice()) ? $params->getVoice() : (isset($this->_voice) ? $this->_voice : null);
+
+                $say = new Say($value, $params->getAs(), $params->getEvent(), $voice, $params->getAllowSignals());
             }
-            $this->say = array(sprintf('%s', $say));
+            $this->_load_action('say', array(sprintf('%s', $say)));
         }
 
         public function sendEvent ($session_id, $value) {
@@ -776,5 +776,15 @@
             }
             $this->wait = sprintf('%s', $wait);
 
+        }
+
+        /**
+         * Loads a tropo action onto the internal stack
+         *
+         * @param string          $action
+         * @param string|string[] $value
+         */
+        protected function _load_action ($action, $value) {
+            array_push($this->tropo, array($action => $value));
         }
     }

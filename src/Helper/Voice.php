@@ -18,20 +18,20 @@
      */
     class Voice {
 
-        public static $Castilian_Spanish_male   = "jorge";
-        public static $Castilian_Spanish_female = "carmen";
-        public static $French_male              = "bernard";
-        public static $French_female            = "florence";
-        public static $US_English_male          = "dave";
-        public static $US_English_female        = "jill";
-        public static $British_English_male     = "dave";
-        public static $British_English_female   = "kate";
-        public static $German_male              = "stefan";
-        public static $German_female            = "katrin";
-        public static $Italian_male             = "luca";
-        public static $Italian_female           = "paola";
-        public static $Dutch_male               = "willem";
-        public static $Dutch_female             = "saskia";
-        public static $Mexican_Spanish_male     = "carlos";
-        public static $Mexican_Spanish_female   = "soledad";
+        const BRITISH_ENGLISH_FEMALE   = "kate";
+        const BRITISH_ENGLISH_MALE     = "dave";
+        const CASTILIAN_SPANISH_FEMALE = "carmen";
+        const CASTILIAN_SPANISH_MALE   = "jorge";
+        const DUTCH_FEMALE             = "saskia";
+        const DUTCH_MALE               = "willem";
+        const FRENCH_FEMALE            = "florence";
+        const FRENCH_MALE              = "bernard";
+        const GERMAN_FEMALE            = "katrin";
+        const GERMAN_MALE              = "stefan";
+        const ITALIAN_FEMALE           = "paola";
+        const ITALIAN_MALE             = "luca";
+        const MEXICAN_SPANISH_FEMALE   = "soledad";
+        const MEXICAN_SPANISH_MALE     = "carlos";
+        const US_ENGLISH_FEMALE        = "jill";
+        const US_ENGLISH_MALE          = "dave";
     }

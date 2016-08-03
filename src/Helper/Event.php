@@ -18,11 +18,13 @@
      */
     class Event {
 
-        public static $continue   = 'continue';
-        public static $incomplete = 'incomplete';
-        public static $error      = 'error';
-        public static $hangup     = 'hangup';
-        public static $join       = 'join';
-        public static $leave      = 'leave';
-        public static $ring       = 'ring';
+        const CONFERENCE_JOIN    = 'join';      // undocumented
+        const CONFERENCE_LEAVE   = 'leave';     // undocumented
+        const GENERAL_CONTINUE   = 'continue';
+        const GENERAL_ERROR      = 'error';
+        const GENERAL_HANGUP     = 'hangup';
+        const GENERAL_INCOMPLETE = 'incomplete';
+        const TRANSFER_CONNECT   = 'connect';
+        const TRANSFER_RING      = 'ring';
+
     }

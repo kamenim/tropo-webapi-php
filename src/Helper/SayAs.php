@@ -18,7 +18,7 @@
      */
     class SayAs {
 
-        public static $date   = "DATE";
-        public static $digits = "DIGITS";
-        public static $number = "NUMBER";
+        const DATE   = "DATE";
+        const DIGITS = "DIGITS";
+        const NUMBER = "NUMBER";    // Currently causing and error from Tropo
     }
