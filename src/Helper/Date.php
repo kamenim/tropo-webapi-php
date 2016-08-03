@@ -14,7 +14,7 @@
     /**
      * Date Helper class.
      *
-     * @package TropoPHP_Support
+     * @package Tropo\Helper
      */
     class Date {
 

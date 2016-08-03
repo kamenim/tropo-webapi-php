@@ -14,7 +14,7 @@
     /**
      * Voice Helper class.
      *
-     * @package TropoPHP_Support
+     * @package Tropo\Helper
      */
     class Voice {
 

@@ -12,15 +12,13 @@
     namespace Tropo\Helper;
 
     /**
-     * Duration Helper class.
+     * Event Helper class.
      *
      * @package Tropo\Helper
      */
-    class Duration {
+    class SayEvent {
 
-        public static $hoursMinutesSeconds = "hms";
-        public static $hoursMinutes        = "hm";
-        public static $hours               = "h";
-        public static $minutes             = "m";
-        public static $seconds             = "s";
+        const NO_MATCH = 'nomatch';
+        const TIMEOUT  = 'timeout';
+
     }

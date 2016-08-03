@@ -14,7 +14,7 @@
     /**
      * SIP Headers Helper class.
      *
-     * @package TropoPHP_Support
+     * @package Tropo\Helper
      */
     class Headers {
 

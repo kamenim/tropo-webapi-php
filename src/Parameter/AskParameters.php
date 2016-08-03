@@ -32,8 +32,8 @@
         private $recognizer = null;
         /** @var null|boolean */
         private $required = null;
-        /** @var null|\Tropo\Action\Say[] */
-        private $say_events = null;
+        /** @var \Tropo\Action\Say[] */
+        private $say_events = array();
         /** @var null|double */
         private $sensitivity = null;
         /** @var null|double */
@@ -44,6 +44,17 @@
         private $timeout = null;
         /** @var null|string */
         private $voice = null;
+
+        /**
+         * @param \Tropo\Action\Say $say_event
+         *
+         * @return AskParameters
+         */
+        public function addSayEvent ($say_event) {
+            $this->say_events[] = $say_event;
+
+            return $this;
+        }
 
         /**
          * @return string|\string[]
@@ -109,7 +120,7 @@
         }
 
         /**
-         * @return null|\Tropo\Action\Say[]
+         * @return \Tropo\Action\Say[]
          */
         public function getSayEvents () {
             return $this->say_events;
@@ -245,17 +256,6 @@
          */
         public function setRequired ($required) {
             $this->required = $required;
-
-            return $this;
-        }
-
-        /**
-         * @param null|\Tropo\Action\Say[] $say_events
-         *
-         * @return AskParameters
-         */
-        public function setSayEvents ($say_events) {
-            $this->say_events = $say_events;
 
             return $this;
         }
