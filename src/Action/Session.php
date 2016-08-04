@@ -20,19 +20,30 @@
      * TODO: Consider using associative array for To and From.
      * TODO: Need to break out headers into a more accessible data structure.
      *
-     * @package TropoPHP
+     * @package Tropo\Action
      */
     class Session {
 
-        private $_id;
+        /** @var  string */
         private $_accountId;
+        /** @var  string */
         private $_callId;
-        private $_timestamp;
-        private $_initialText;
-        private $_to;
+        /** @var string[] */
         private $_from;
+        /** @var \Tropo\Helper\Headers */
         private $_headers;
+        /** @var  string */
+        private $_id;
+        /** @var  string */
+        private $_initialText;
+        /** @var array|null */
         private $_parameters;
+        /** @var string */
+        private $_raw_json;
+        /** @var  string */
+        private $_timestamp;
+        /** @var string[] */
+        private $_to;
 
         /**
          * Class constructor
@@ -50,10 +61,14 @@
                     throw new TropoException('No JSON available.', 1);
                 }
             }
-            $session = json_decode($json);
+
+            $this->_raw_json = $json;
+            $session         = json_decode($json);
+
             if (!is_object($session) || !property_exists($session, "session")) {
                 throw new TropoException('Not a session object.', 2);
             }
+
             $this->_id          = $session->session->id;
             $this->_accountId   = $session->session->accountId;
             $this->_callId      = $session->session->callId;
@@ -92,44 +107,60 @@
             $this->_parameters = property_exists($session->session, 'parameters') ? (Array)$session->session->parameters : null;
         }
 
-        public function getId () {
-            return $this->_id;
-        }
-
+        /**
+         * @return string
+         */
         public function getAccountID () {
             return $this->_accountId;
         }
 
+        /**
+         * @return string
+         */
         public function getCallId () {
             return $this->_callId;
         }
 
-        public function getTimeStamp () {
-            return $this->_timestamp;
-        }
-
-        public function getInitialText () {
-            return $this->_initialText;
-        }
-
-        public function getTo () {
-            return $this->_to;
-        }
-
+        /**
+         * @return string[]
+         */
         public function getFrom () {
             return $this->_from;
         }
 
+        /**
+         * @return string
+         */
         function getFromChannel () {
             return $this->_from['channel'];
         }
 
+        /**
+         * @return string
+         */
         function getFromNetwork () {
             return $this->_from['network'];
         }
 
+        /**
+         * @return \Tropo\Helper\Headers
+         */
         public function getHeaders () {
             return $this->_headers;
+        }
+
+        /**
+         * @return string
+         */
+        public function getId () {
+            return $this->_id;
+        }
+
+        /**
+         * @return string
+         */
+        public function getInitialText () {
+            return $this->_initialText;
         }
 
         /**
@@ -143,7 +174,7 @@
          *
          * @param string $name A specific parameter to return
          *
-         * @return string|array $param
+         * @return null|string|array
          */
         public function getParameters ($name = null) {
             if (isset($name)) {
@@ -168,6 +199,32 @@
             }
         }
 
+        /**
+         * @return string
+         */
+        public function getRawJson () {
+            return $this->_raw_json;
+        }
+
+        /**
+         * @return string
+         */
+        public function getTimeStamp () {
+            return $this->_timestamp;
+        }
+
+        /**
+         * @return string[]
+         */
+        public function getTo () {
+            return $this->_to;
+        }
+
+        /**
+         * @param \stdClass $headers
+         *
+         * @return \Tropo\Helper\Headers
+         */
         public function setHeaders ($headers) {
             $formattedHeaders = new Headers();
             // headers don't exist on outbound calls
