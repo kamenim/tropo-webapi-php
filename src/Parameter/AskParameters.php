@@ -7,6 +7,10 @@
      */
     namespace Tropo\Parameter;
 
+    use Tropo\Action\Say;
+    use Tropo\Exception\TropoParameterException;
+    use Tropo\Helper\SayEvent;
+
     /**
      * Contains the parameters for the "Ask" action object
      *
@@ -46,12 +50,29 @@
         private $voice = null;
 
         /**
-         * @param \Tropo\Action\Say $say_event
+         * Adds a say event to this Ask object
          *
-         * @return AskParameters
+         * @param string       $message
+         * @param string       $event
+         * @param integer|null $attempt_number
+         * @param null|string  $voice
+         *
+         * @return \Tropo\Parameter\AskParameters
+         *
+         * @throws \Tropo\Exception\TropoParameterException
          */
-        public function addSayEvent ($say_event) {
-            $this->say_events[] = $say_event;
+        public function addSayEvent ($message, $event = SayEvent::NO_MATCH, $attempt_number = null, $voice = null) {
+            if (empty($message)) {
+                throw new TropoParameterException("Missing say message");
+            }
+            if (empty($event)) {
+                throw new TropoParameterException("Missing say event");
+            }
+
+            $event = empty($attempt_number) ? $event : sprintf("%s:%d", $event, $attempt_number);
+            $voice = !empty($voice) ? $voice : (!empty($this->voice) ? $this->voice : null);
+
+            $this->say_events[] = new Say($message, null, $event, $voice);
 
             return $this;
         }
