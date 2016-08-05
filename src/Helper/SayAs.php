@@ -20,5 +20,5 @@
 
         const DATE   = "DATE";
         const DIGITS = "DIGITS";
-        const NUMBER = "NUMBER";    // Currently causing and error from Tropo
+        const NUMBER = "NUMBER";    // Currently causing an error from Tropo...!
     }
