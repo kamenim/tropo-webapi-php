@@ -11,6 +11,8 @@
      */
     namespace Tropo\Action;
 
+    use Tropo\Helper\AskMode;
+
     /**
      * Defines the input to be collected from the user.
      *
@@ -33,7 +35,7 @@
          * @param null|string $mode
          * @param null|string $terminator
          */
-        public function __construct ($value, $mode = null, $terminator = null) {
+        public function __construct ($value, $mode = AskMode::ANY, $terminator = null) {
             $this->_value      = $value;
             $this->_mode       = $mode;
             $this->_terminator = $terminator;
