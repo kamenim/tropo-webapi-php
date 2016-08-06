@@ -18,20 +18,24 @@
      */
     class Voice {
 
-        const BRITISH_ENGLISH_FEMALE   = "kate";
-        const BRITISH_ENGLISH_MALE     = "dave";
-        const CASTILIAN_SPANISH_FEMALE = "carmen";
-        const CASTILIAN_SPANISH_MALE   = "jorge";
-        const DUTCH_FEMALE             = "saskia";
-        const DUTCH_MALE               = "willem";
-        const FRENCH_FEMALE            = "florence";
-        const FRENCH_MALE              = "bernard";
-        const GERMAN_FEMALE            = "katrin";
-        const GERMAN_MALE              = "stefan";
-        const ITALIAN_FEMALE           = "paola";
-        const ITALIAN_MALE             = "luca";
-        const MEXICAN_SPANISH_FEMALE   = "soledad";
-        const MEXICAN_SPANISH_MALE     = "carlos";
-        const US_ENGLISH_FEMALE        = "jill";
-        const US_ENGLISH_MALE          = "dave";
+        const ENGLISH_UK_DANIEL                = 'daniel';
+        const ENGLISH_UK_KATE                  = 'kate';
+        const ENGLISH_UK_OLIVER                = 'oliver';
+        const ENGLISH_UK_SERENA                = 'serena';
+        const ENGLISH_US_FEMALE_ALLISON        = 'allison';
+        const ENGLISH_US_FEMALE_AVA            = 'ava';
+        const ENGLISH_US_FEMALE_SAMANTHA       = 'samantha';
+        const ENGLISH_US_FEMALE_SUSAN          = 'susan';
+        const ENGLISH_US_FEMALE_VANESSA        = 'vanessa';
+        const ENGLISH_US_FEMALE_VERONICA       = 'veronica';
+        const ENGLISH_US_MALE_TOM              = 'tom';
+        const ENGLISH_US_MALE_VICTOR           = 'victor';
+        const SPANISH_ARGENTINEAN_MALE_DIEGO   = 'diego';
+        const SPANISH_CASTILLIAN_FEMALE_MONICA = 'monica';
+        const SPANISH_CASTILLIAN_MALE_JORGE    = 'jorge';
+        const SPANISH_COLOMBIAN_FEMALE_SOLEDAD = 'soledad';
+        const SPANISH_COLOMBIAN_MALE_CARLOS    = 'carlos';
+        const SPANISH_MEXICAN_FEMALE_ANGELICA  = 'angelica';
+        const SPANISH_MEXICAN_FEMALE_PAULINA   = 'paulina';
+        const SPANISH_MEXICAN_MALE_JUAN        = 'juan';
     }
