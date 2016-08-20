@@ -14,6 +14,8 @@
         private $as = null;
         /** @var string Event associated with this say, if used within an ask */
         private $event = null;
+        /** @var  boolean */
+        private $format_as_ssml = false;
         /** @var string */
         private $voice = null;
 
@@ -46,6 +48,13 @@
         }
 
         /**
+         * @return boolean
+         */
+        public function isFormatAsSsml () {
+            return $this->format_as_ssml;
+        }
+
+        /**
          * @param string|\string[] $allow_signals
          *
          * @return SayParameters
@@ -74,6 +83,17 @@
          */
         public function setEvent ($event) {
             $this->event = $event;
+
+            return $this;
+        }
+
+        /**
+         * @param boolean $format_as_ssml
+         *
+         * @return SayParameters
+         */
+        public function setFormatAsSsml ($format_as_ssml) {
+            $this->format_as_ssml = $format_as_ssml;
 
             return $this;
         }
