@@ -50,29 +50,32 @@
         private $voice = null;
 
         /**
-         * Adds a say event to this Ask object
+         * Adds a say event to this Ask object.
          *
-         * @param string       $message
-         * @param string       $event
-         * @param integer|null $attempt_number
-         * @param null|string  $voice
+         * @param string|\Tropo\Action\Say $say
+         * @param string                   $event
+         * @param integer|null             $attempt_number
+         * @param string|null              $voice
          *
          * @return \Tropo\Parameter\AskParameters
-         *
          * @throws \Tropo\Exception\TropoParameterException
          */
-        public function addSayEvent ($message, $event = SayEvent::NO_MATCH, $attempt_number = null, $voice = null) {
-            if (empty($message)) {
-                throw new TropoParameterException("Missing say message");
-            }
-            if (empty($event)) {
-                throw new TropoParameterException("Missing say event");
-            }
+        public function addSayEvent ($say, $event = SayEvent::NO_MATCH, $attempt_number = null, $voice = null) {
+            if (is_object($say)) {
+                $this->say_events[] = $say;
+            } else {
+                if (empty($say)) {
+                    throw new TropoParameterException("Missing say message");
+                }
+                if (empty($event)) {
+                    throw new TropoParameterException("Missing say event");
+                }
 
-            $event = empty($attempt_number) ? $event : sprintf("%s:%d", $event, $attempt_number);
-            $voice = !empty($voice) ? $voice : (!empty($this->voice) ? $this->voice : null);
+                $event = empty($attempt_number) ? $event : sprintf("%s:%d", $event, $attempt_number);
+                $voice = !empty($voice) ? $voice : (!empty($this->voice) ? $this->voice : null);
 
-            $this->say_events[] = new Say($message, null, $event, $voice);
+                $this->say_events[] = new Say($say, null, $event, $voice);
+            }
 
             return $this;
         }
