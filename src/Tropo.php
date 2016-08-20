@@ -13,9 +13,9 @@
 
     use Exception;
     use Tropo\Action\Ask;
+    use Tropo\Action\BaseClass;
     use Tropo\Action\On;
     use Tropo\Action\Say;
-    use Tropo\Action\BaseClass;
     use Tropo\Exception\TropoException;
     use Tropo\Parameter\AskParameters;
     use Tropo\Parameter\SayParameters;
@@ -87,24 +87,28 @@
          * pass in a fully-formed Ask object or a string to use as the
          * prompt and an ask parameters object.
          *
-         * @param string|\Tropo\Action\Ask       $ask
-         * @param \Tropo\Parameter\AskParameters $params
+         * @param string|\Tropo\Action\Say|\Tropo\Action\Ask $ask
+         * @param \Tropo\Parameter\AskParameters             $params
          *
          * @see https://www.tropo.com/docs/webapi/ask.htm
          */
         public function ask ($ask, $params = null) {
-            if (!is_object($ask)) {
+            if (!is_object($ask) || get_class($ask) == 'Tropo\\Action\\Say') {
                 if (is_null($params)) {
                     $params = new AskParameters();
                 }
                 // Set voice with default fallback
                 $voice = !empty($params->getVoice()) ? $params->getVoice() : (isset($this->_voice) ? $this->_voice : null);
 
-                // If say events were passed in, add them to the Ask's say array
+                // If say events were loaded, add them to the Ask's say array
                 $say = (!empty($params->getSayEvents())) ? $params->getSayEvents() : array();
 
                 // Add the main Ask wording to the say array
-                $say[] = new Say($ask);
+                if (is_object($ask)) {
+                    $say[] = $ask;
+                } else {
+                    $say[] = new Say($ask, null, null, $voice);
+                }
 
                 $ask = new Ask(
                     $params->getChoices(),
@@ -450,10 +454,21 @@
         /**
          * Renders the Tropo object as JSON.
          *
+         * @param bool $return If true, the tropo object will be returned instead of echoed to stdout
+         *
+         * @return boolean|string
          */
-        public function renderJSON () {
+        public function renderJSON ($return = false) {
+            $output = strval($this);
+
+            if ($return) {
+                return $output;
+            }
+
             header('Content-type: application/json');
             echo $this;
+
+            return true;
         }
 
         /**
@@ -462,21 +477,33 @@
          *
          * @param string|Say                     $say
          * @param \Tropo\Parameter\SayParameters $params
+         * @param boolean                        $return If true, the say object will be returned instead of added to action stack
          *
+         * @return boolean|\Tropo\Action\Say
          * @see https://www.tropo.com/docs/webapi/say.htm
+         *
          */
-        public function say ($say, $params = null) {
+        public function say ($say, $params = null, $return = false) {
             if (!is_object($say)) {
-                $value = sprintf("%s", $say);
                 if (is_null($params)) {
                     $params = new SayParameters();
                 }
                 // Set voice with default fallback
                 $voice = !empty($params->getVoice()) ? $params->getVoice() : (isset($this->_voice) ? $this->_voice : null);
 
+                // Assemble say value string with optional SSML markup wrapping
+                $value = sprintf("%s%s%s", ($params->isFormatAsSsml() ? "<?xml version='1.0'?><speak>" : ''), $say, ($params->isFormatAsSsml() ? "</speak>" : ''));
+
                 $say = new Say($value, $params->getAs(), $params->getEvent(), $voice, $params->getAllowSignals());
             }
-            $this->_load_action('say', array(sprintf('%s', $say)));
+
+            if ($return) {
+                return $say;
+            } else {
+                $this->_load_action('say', array(sprintf('%s', $say)));
+
+                return true;
+            }
         }
 
         public function sendEvent ($session_id, $value) {
