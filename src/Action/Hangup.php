@@ -14,8 +14,7 @@
     /**
      * This function instructs Tropo to "hang-up" or disconnect the session associated with the current session.
      *
-     * @package TropoPHP_Support
-     *
+     * @package Tropo\Action
      */
     class Hangup extends EmptyBaseClass {
 

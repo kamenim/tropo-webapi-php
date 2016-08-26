@@ -14,6 +14,7 @@
     use Exception;
     use Tropo\Action\Ask;
     use Tropo\Action\BaseClass;
+    use Tropo\Action\Hangup;
     use Tropo\Action\On;
     use Tropo\Action\Say;
     use Tropo\Exception\TropoException;
@@ -298,8 +299,8 @@
          * @see https://www.tropo.com/docs/webapi/hangup.htm
          */
         public function hangup () {
-            $hangup       = new Hangup();
-            $this->hangup = sprintf('%s', $hangup);
+            $hangup = new Hangup();
+            $this->_load_action('hangup', sprintf('%s', $hangup));
         }
 
         /**
