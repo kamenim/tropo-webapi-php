@@ -12,13 +12,21 @@
     namespace Tropo;
 
     use Exception;
+    use Parameter\StartRecordingParameters;
     use Tropo\Action\Ask;
     use Tropo\Action\BaseClass;
+    use Tropo\Action\Choices;
     use Tropo\Action\Hangup;
     use Tropo\Action\On;
+    use Tropo\Action\Record;
     use Tropo\Action\Say;
+    use Tropo\Action\StartRecording;
+    use Tropo\Action\StopRecording;
+    use Tropo\Action\Transfer;
     use Tropo\Exception\TropoException;
     use Tropo\Parameter\AskParameters;
+    use Tropo\Parameter\OnParameters;
+    use Tropo\Parameter\RecordParameters;
     use Tropo\Parameter\SayParameters;
 
     /**
@@ -88,8 +96,8 @@
          * pass in a fully-formed Ask object or a string to use as the
          * prompt and an ask parameters object.
          *
-         * @param string|\Tropo\Action\Say|\Tropo\Action\Ask $ask
-         * @param \Tropo\Parameter\AskParameters             $params
+         * @param string|Say|Ask $ask
+         * @param AskParameters  $params
          *
          * @see https://www.tropo.com/docs/webapi/ask.htm
          */
@@ -108,7 +116,7 @@
                 if (is_object($ask)) {
                     $say[] = $ask;
                 } else {
-                    $say[] = new Say($ask, null, null, $voice);
+                    $say[] = new Say($ask, null, null, null, $voice);
                 }
 
                 $ask = new Ask(
@@ -331,7 +339,7 @@
          * Adds an event callback so that your application may be notified when a particular event occurs.
          * Possible events are: "continue", "error", "incomplete" and "hangup".
          *
-         * @param \Tropo\Action\On|\Tropo\Parameter\OnParameters $on
+         * @param On|OnParameters $on
          *
          * @throws \Tropo\Exception\TropoException
          *
@@ -353,72 +361,58 @@
         }
 
         /**
-         * Plays a prompt (audio file or text to speech) and optionally waits for a response from the caller that is recorded.
+         * Plays a prompt (audio file or text to speech) then optionally waits for a response from the caller and records it.
          * If collected, responses may be in the form of DTMF or speech recognition using a simple grammar format defined below.
-         * The record funtion is really an alias of the prompt function, but one which forces the record option to true regardless of how it is (or is not) initially set.
+         * The record function is really an alias of the prompt function, but one which forces the record option to true regardless of how it is (or is not) initially set.
          * At the conclusion of the recording, the audio file may be automatically sent to an external server via FTP or an HTTP POST/Multipart Form.
-         * If specified, the audio file may also be transcribed and the text returned to you via an email address or HTTP POST/Multipart Form.
+         * It may also be sent to your Amazon S3 bucket. If desired, the audio file can also be transcribed and the text returned to you via an email address or HTTP POST/Multipart Form.
+         * Although the record function will allow extremely long recordings, transcription is limited to three hours. If you attempt to transcribe something longer than that, you will not receive a transcription.
          *
-         * @param array|Record $record
+         * @param Record|RecordParameters $record
          *
+         * @throws \Tropo\Exception\TropoException
          * @see https://www.tropo.com/docs/webapi/record.htm
          */
         public function record ($record) {
-            if (!is_object($record) && is_array($record)) {
-                $params = $record;
-                $p      = array('as', 'voice', 'emailFormat', 'transcription', 'terminator');
-                foreach ($p as $option) {
-                    $params[$option] = array_key_exists($option, $params) ? $params[$option] : null;
-                }
-                $choices = isset($params["choices"])
-                    ? new Choices(null, null, $params["choices"])
-                    : null;
-                $choices = isset($params["terminator"])
-                    ? new Choices(null, null, $params["terminator"])
-                    : $choices;
-                if (!isset($params['voice'])) {
-                    $params['voice'] = $this->_voice;
-                }
-                $say = new Say($params["say"], $params["as"], null, null);
-                if (is_array($params['transcription'])) {
-                    $p = array('url', 'id', 'emailFormat');
-                    foreach ($p as $option) {
-                        $$option = null;
-                        if (!is_array($params["transcription"]) || !array_key_exists($option, $params["transcription"])) {
-                            $params["transcription"][$option] = null;
-                        }
-                    }
-                    $transcription = new Transcription($params["transcription"]["url"], $params["transcription"]["id"], $params["transcription"]["emailFormat"]);
-                } else {
-                    $transcription = $params["transcription"];
-                }
-                $p = array(
-                    'attempts',
-                    'allowSignals',
-                    'bargein',
-                    'beep',
-                    'format',
-                    'maxTime',
-                    'maxSilence',
-                    'method',
-                    'password',
-                    'required',
-                    'timeout',
-                    'username',
-                    'url',
-                    'voice',
-                    'minConfidence',
-                    'interdigitTimeout'
-                );
-                foreach ($p as $option) {
-                    $$option = null;
-                    if (is_array($params) && array_key_exists($option, $params)) {
-                        $$option = $params[$option];
-                    }
-                }
-                $record = new Record($attempts, $allowSignals, $bargein, $beep, $choices, $format, $maxSilence, $maxTime, $method, $password, $required, $say, $timeout, $transcription, $username, $url, $voice, $minConfidence, $interdigitTimeout);
+            if (!is_object($record)) {
+                $record = new RecordParameters();
             }
-            $this->record = sprintf('%s', $record);
+            $class_type = get_class($record);
+            if ($class_type != 'Tropo\\Action\\Record' && $class_type != 'Tropo\\Parameter\\RecordParameters') {
+                throw new TropoException(sprintf("Must provide either a 'Record' or 'RecordParameters' object, '%s' provided instead", $class_type));
+            }
+
+            if ($class_type == 'Tropo\\Parameter\\RecordParameters') {
+                $params  = $record;
+                $voice   = !empty($params->getVoice()) ? $params->getVoice() : (isset($this->_voice) ? $this->_voice : null);
+                $choices = !empty($params->getTerminator()) ? new Choices(null, null, $params->getTerminator()) : null;
+                $say     = is_object($params->getSay()) ? $params->getSay() : (!empty($params->getSay()) ? new Say($params->getSay()) : null);
+
+                $record = new Record(
+                    $params->getAttempts(),
+                    $params->isAsyncUpload(),
+                    $params->getAllowSignals(),
+                    $params->isBargein(),
+                    $params->isBeep(),
+                    $choices,
+                    $say,
+                    $params->getFormat(),
+                    $params->getMaxSilence(),
+                    $params->getMaxTime(),
+                    $params->getMethod(),
+                    $params->getName(),
+                    $params->isRequired(),
+                    $params->getTranscription(),
+                    $params->getUrl(),
+                    $params->getPassword(),
+                    $params->getUsername(),
+                    $params->getTimeout(),
+                    $params->getInterdigitTimeout(),
+                    $voice
+                );
+            }
+
+            $this->_load_action('record', sprintf('%s', $record));
         }
 
         /**
@@ -476,11 +470,11 @@
          * When the current session is a voice channel this key will either play a message or an audio file from a URL.
          * In the case of an text channel it will send the text back to the user via instant messaging or SMS.
          *
-         * @param string|Say                     $say
-         * @param \Tropo\Parameter\SayParameters $params
-         * @param boolean                        $return If true, the say object will be returned instead of added to action stack
+         * @param string|Say    $say
+         * @param SayParameters $params
+         * @param boolean       $return If true, the say object will be returned instead of added to action stack
          *
-         * @return boolean|\Tropo\Action\Say
+         * @return boolean|Say
          * @see https://www.tropo.com/docs/webapi/say.htm
          *
          */
@@ -489,13 +483,10 @@
                 if (is_null($params)) {
                     $params = new SayParameters();
                 }
-                // Set voice with default fallback
                 $voice = !empty($params->getVoice()) ? $params->getVoice() : (isset($this->_voice) ? $this->_voice : null);
-
-                // Assemble say value string with optional SSML markup wrapping
                 $value = sprintf("%s%s%s", ($params->isFormatAsSsml() ? "<?xml version='1.0'?><speak>" : ''), $say, ($params->isFormatAsSsml() ? "</speak>" : ''));
 
-                $say = new Say($value, $params->getAs(), $params->getEvent(), $voice, $params->getAllowSignals());
+                $say = new Say($value, $params->getAllowSignals(), $params->getAs(), $params->getName(), $voice, $params->getEvent());
             }
 
             if ($return) {
@@ -504,17 +495,6 @@
                 $this->_load_action('say', array(sprintf('%s', $say)));
 
                 return true;
-            }
-        }
-
-        public function sendEvent ($session_id, $value) {
-            try {
-                $event  = new EventAPI();
-                $result = $event->sendEvent($session_id, $value);
-
-                return $result;
-            } catch (Exception $ex) {
-                throw new TropoException($ex->getMessage(), $ex->getCode());
             }
         }
 
@@ -551,42 +531,46 @@
          * Allows Tropo applications to begin recording the current session.
          * The resulting recording may then be sent via FTP or an HTTP POST/Multipart Form.
          *
-         * @param array|StartRecording $startRecording
+         * @param StartRecording|StartRecordingParameters $startRecording
          *
+         * @throws \Tropo\Exception\TropoException
          * @see https://www.tropo.com/docs/webapi/startrecording.htm
          */
         public function startRecording ($startRecording) {
-            if (!is_object($startRecording) && is_array($startRecording)) {
-                $params = $startRecording;
-                $p      = array(
-                    'format',
-                    'method',
-                    'password',
-                    'url',
-                    'username',
-                    'transcriptionID',
-                    'transcriptionEmailFormat',
-                    'transcriptionOutURI'
-                );
-                foreach ($p as $option) {
-                    $$option = null;
-                    if (is_array($params) && array_key_exists($option, $params)) {
-                        $$option = $params[$option];
-                    }
-                }
-                $startRecording = new StartRecording($format, $method, $password, $url, $username, $transcriptionID, $transcriptionEmailFormat, $transcriptionOutURI);
+            if (!is_object($startRecording)) {
+                $startRecording = new StartRecordingParameters();
             }
-            $this->startRecording = sprintf('%s', $startRecording);
+            $class_type = get_class($startRecording);
+            if ($class_type != 'Tropo\\Action\\StartRecording' && $class_type != 'Tropo\\Parameter\\StartRecordingParameters') {
+                throw new TropoException(sprintf("Must provide either a 'StartRecording' or 'StartRecordingParameters' object, '%s' provided instead", $class_type));
+            }
+
+            if ($class_type == 'Tropo\\Parameter\\StartRecordingParameters') {
+                $params         = $startRecording;
+                $startRecording = new StartRecording(
+                    $params->isAsyncUpload(),
+                    $params->getFormat(),
+                    $params->getMethod(),
+                    $params->getUrl(),
+                    $params->getUsername(),
+                    $params->getPassword(),
+                    $params->getTranscriptionOutURI(),
+                    $params->getTranscriptionEmailFormat(),
+                    $params->getTranscriptionID()
+                );
+            }
+
+            $this->_load_action('startRecording', sprintf('%s', $startRecording));
         }
 
         /**
-         * Stops a previously started recording.
+         * Stops the recording of the current call after startRecording has been called.
          *
          * @see https://www.tropo.com/docs/webapi/stoprecording.htm
          */
         public function stopRecording () {
-            $stopRecording       = new stopRecording();
-            $this->stopRecording = sprintf('%s', $stopRecording);
+            $stopRecording = new StopRecording();
+            $this->_load_action('stopRecording', sprintf('%s', $stopRecording));
         }
 
         /**
@@ -596,6 +580,7 @@
          * @param string|Transfer $transfer
          * @param array           $params
          *
+         * @throws \Tropo\Exception\TropoException
          * @see https://www.tropo.com/docs/webapi/transfer.htm
          */
         public function transfer ($transfer, Array $params = null) {
