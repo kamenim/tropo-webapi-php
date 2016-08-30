@@ -1,10 +1,4 @@
 <?php
-    /**
-     * Created by PhpStorm.
-     * User: rjking
-     * Date: 8/1/16
-     * Time: 5:54 PM
-     */
     namespace Tropo\Parameter;
 
     use Tropo\Action\Say;
@@ -19,35 +13,35 @@
     class AskParameters {
 
         /** @var string|string[] */
-        private $allowSignals = null;
+        private $_allowSignals = null;
         /** @var null|integer */
-        private $attempts = null;
+        private $_attempts = null;
         /** @var null|boolean */
-        private $bargein = null;
+        private $_bargein = null;
         /** @var null|\Tropo\Action\Choices */
-        private $choices = null;
+        private $_choices = null;
         /** @var null|double */
-        private $interdigitTimeout = null;
+        private $_interdigitTimeout = null;
         /** @var null|integer */
-        private $minConfidence = null;
+        private $_minConfidence = null;
         /** @var null|string */
-        private $name = null;
+        private $_name = null;
         /** @var null|string */
-        private $recognizer = null;
+        private $_recognizer = null;
         /** @var null|boolean */
-        private $required = null;
+        private $_required = null;
         /** @var \Tropo\Action\Say[] */
-        private $say_events = array();
+        private $_sayEvents = array();
         /** @var null|double */
-        private $sensitivity = null;
+        private $_sensitivity = null;
         /** @var null|double */
-        private $speechCompleteTimeout = null;
+        private $_speechCompleteTimeout = null;
         /** @var null|double */
-        private $speechIncompleteTimeout = null;
+        private $_speechIncompleteTimeout = null;
         /** @var null|double */
-        private $timeout = null;
+        private $_timeout = null;
         /** @var null|string */
-        private $voice = null;
+        private $_voice = null;
 
         /**
          * Adds a say event to this Ask object.
@@ -62,7 +56,7 @@
          */
         public function addSayEvent ($say, $event = SayEvent::NO_MATCH, $attempt_number = null, $voice = null) {
             if (is_object($say)) {
-                $this->say_events[] = $say;
+                $this->_sayEvents[] = $say;
             } else {
                 if (empty($say)) {
                     throw new TropoParameterException("Missing say message");
@@ -72,9 +66,9 @@
                 }
 
                 $event = empty($attempt_number) ? $event : sprintf("%s:%d", $event, $attempt_number);
-                $voice = !empty($voice) ? $voice : (!empty($this->voice) ? $this->voice : null);
+                $voice = !empty($voice) ? $voice : (!empty($this->_voice) ? $this->_voice : null);
 
-                $this->say_events[] = new Say($say, null, $event, $voice);
+                $this->_sayEvents[] = new Say($say, null, null, null, $voice, $event);
             }
 
             return $this;
@@ -84,105 +78,105 @@
          * @return string|\string[]
          */
         public function getAllowSignals () {
-            return $this->allowSignals;
+            return $this->_allowSignals;
         }
 
         /**
          * @return int|null
          */
         public function getAttempts () {
-            return $this->attempts;
+            return $this->_attempts;
         }
 
         /**
          * @return bool|null
          */
         public function getBargein () {
-            return $this->bargein;
+            return $this->_bargein;
         }
 
         /**
          * @return null|\Tropo\Action\Choices
          */
         public function getChoices () {
-            return $this->choices;
+            return $this->_choices;
         }
 
         /**
          * @return float|null
          */
         public function getInterdigitTimeout () {
-            return $this->interdigitTimeout;
+            return $this->_interdigitTimeout;
         }
 
         /**
          * @return int|null
          */
         public function getMinConfidence () {
-            return $this->minConfidence;
+            return $this->_minConfidence;
         }
 
         /**
          * @return null|string
          */
         public function getName () {
-            return $this->name;
+            return $this->_name;
         }
 
         /**
          * @return null|string
          */
         public function getRecognizer () {
-            return $this->recognizer;
+            return $this->_recognizer;
         }
 
         /**
          * @return bool|null
          */
         public function getRequired () {
-            return $this->required;
+            return $this->_required;
         }
 
         /**
          * @return \Tropo\Action\Say[]
          */
         public function getSayEvents () {
-            return $this->say_events;
+            return $this->_sayEvents;
         }
 
         /**
          * @return float|null
          */
         public function getSensitivity () {
-            return $this->sensitivity;
+            return $this->_sensitivity;
         }
 
         /**
          * @return float|null
          */
         public function getSpeechCompleteTimeout () {
-            return $this->speechCompleteTimeout;
+            return $this->_speechCompleteTimeout;
         }
 
         /**
          * @return float|null
          */
         public function getSpeechIncompleteTimeout () {
-            return $this->speechIncompleteTimeout;
+            return $this->_speechIncompleteTimeout;
         }
 
         /**
          * @return float|null
          */
         public function getTimeout () {
-            return $this->timeout;
+            return $this->_timeout;
         }
 
         /**
          * @return null|string
          */
         public function getVoice () {
-            return $this->voice;
+            return $this->_voice;
         }
 
         /**
@@ -191,7 +185,7 @@
          * @return AskParameters
          */
         public function setAllowSignals ($allowSignals) {
-            $this->allowSignals = $allowSignals;
+            $this->_allowSignals = $allowSignals;
 
             return $this;
         }
@@ -202,7 +196,7 @@
          * @return AskParameters
          */
         public function setAttempts ($attempts) {
-            $this->attempts = $attempts;
+            $this->_attempts = $attempts;
 
             return $this;
         }
@@ -213,7 +207,7 @@
          * @return AskParameters
          */
         public function setBargein ($bargein) {
-            $this->bargein = $bargein;
+            $this->_bargein = $bargein;
 
             return $this;
         }
@@ -224,7 +218,7 @@
          * @return AskParameters
          */
         public function setChoices ($choices) {
-            $this->choices = $choices;
+            $this->_choices = $choices;
 
             return $this;
         }
@@ -235,7 +229,7 @@
          * @return AskParameters
          */
         public function setInterdigitTimeout ($interdigitTimeout) {
-            $this->interdigitTimeout = $interdigitTimeout;
+            $this->_interdigitTimeout = $interdigitTimeout;
 
             return $this;
         }
@@ -246,7 +240,7 @@
          * @return AskParameters
          */
         public function setMinConfidence ($minConfidence) {
-            $this->minConfidence = $minConfidence;
+            $this->_minConfidence = $minConfidence;
 
             return $this;
         }
@@ -257,7 +251,7 @@
          * @return AskParameters
          */
         public function setName ($name) {
-            $this->name = $name;
+            $this->_name = $name;
 
             return $this;
         }
@@ -268,7 +262,7 @@
          * @return AskParameters
          */
         public function setRecognizer ($recognizer) {
-            $this->recognizer = $recognizer;
+            $this->_recognizer = $recognizer;
 
             return $this;
         }
@@ -279,7 +273,7 @@
          * @return AskParameters
          */
         public function setRequired ($required) {
-            $this->required = $required;
+            $this->_required = $required;
 
             return $this;
         }
@@ -290,7 +284,7 @@
          * @return AskParameters
          */
         public function setSensitivity ($sensitivity) {
-            $this->sensitivity = $sensitivity;
+            $this->_sensitivity = $sensitivity;
 
             return $this;
         }
@@ -301,7 +295,7 @@
          * @return AskParameters
          */
         public function setSpeechCompleteTimeout ($speechCompleteTimeout) {
-            $this->speechCompleteTimeout = $speechCompleteTimeout;
+            $this->_speechCompleteTimeout = $speechCompleteTimeout;
 
             return $this;
         }
@@ -312,7 +306,7 @@
          * @return AskParameters
          */
         public function setSpeechIncompleteTimeout ($speechIncompleteTimeout) {
-            $this->speechIncompleteTimeout = $speechIncompleteTimeout;
+            $this->_speechIncompleteTimeout = $speechIncompleteTimeout;
 
             return $this;
         }
@@ -323,7 +317,7 @@
          * @return AskParameters
          */
         public function setTimeout ($timeout) {
-            $this->timeout = $timeout;
+            $this->_timeout = $timeout;
 
             return $this;
         }
@@ -334,7 +328,7 @@
          * @return AskParameters
          */
         public function setVoice ($voice) {
-            $this->voice = $voice;
+            $this->_voice = $voice;
 
             return $this;
         }
