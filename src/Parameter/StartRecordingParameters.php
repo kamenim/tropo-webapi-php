@@ -1,5 +1,5 @@
 <?php
-    namespace Parameter;
+    namespace Tropo\Parameter;
 
     /**
      * Contains the parameters for the "StartRecording" action object
