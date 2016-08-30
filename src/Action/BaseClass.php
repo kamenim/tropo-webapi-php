@@ -15,7 +15,7 @@
      * Base class for Tropo class and individual Tropo action classes.
      * Derived classes must implement both a constructor and __toString() function.
      *
-     * @package  TropoPHP_Support
+     * @package  Tropo\Action
      * @abstract BaseClass
      */
     abstract class BaseClass {
