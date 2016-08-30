@@ -18,6 +18,7 @@
      */
     class AudioFormat {
 
-        public static $wav = "audio/wav";
-        public static $mp3 = "audio/mp3";
+        const AU  = "audio/au";
+        const MP3 = "audio/mp3";
+        const WAV = "audio/wav";
     }
