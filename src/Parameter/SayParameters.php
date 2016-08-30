@@ -9,49 +9,58 @@
     class SayParameters {
 
         /** @var string|string[] */
-        private $allow_signals = null;
+        private $_allowSignals = null;
         /** @var string */
-        private $as = null;
+        private $_as = null;
         /** @var string Event associated with this say, if used within an ask */
-        private $event = null;
+        private $_event = null;
         /** @var  boolean */
-        private $format_as_ssml = false;
+        private $_formatAsSsml = false;
+        /** @var  string */
+        private $_name;
         /** @var string */
-        private $voice = null;
+        private $_voice = null;
 
         /**
          * @return string|\string[]
          */
         public function getAllowSignals () {
-            return $this->allow_signals;
+            return $this->_allowSignals;
         }
 
         /**
          * @return string
          */
         public function getAs () {
-            return $this->as;
+            return $this->_as;
         }
 
         /**
          * @return string
          */
         public function getEvent () {
-            return $this->event;
+            return $this->_event;
+        }
+
+        /**
+         * @return string
+         */
+        public function getName () {
+            return $this->_name;
         }
 
         /**
          * @return string
          */
         public function getVoice () {
-            return $this->voice;
+            return $this->_voice;
         }
 
         /**
          * @return boolean
          */
         public function isFormatAsSsml () {
-            return $this->format_as_ssml;
+            return $this->_formatAsSsml;
         }
 
         /**
@@ -60,7 +69,7 @@
          * @return SayParameters
          */
         public function setAllowSignals ($allow_signals) {
-            $this->allow_signals = $allow_signals;
+            $this->_allowSignals = $allow_signals;
 
             return $this;
         }
@@ -71,7 +80,7 @@
          * @return SayParameters
          */
         public function setAs ($as) {
-            $this->as = $as;
+            $this->_as = $as;
 
             return $this;
         }
@@ -82,7 +91,7 @@
          * @return SayParameters
          */
         public function setEvent ($event) {
-            $this->event = $event;
+            $this->_event = $event;
 
             return $this;
         }
@@ -93,7 +102,18 @@
          * @return SayParameters
          */
         public function setFormatAsSsml ($format_as_ssml) {
-            $this->format_as_ssml = $format_as_ssml;
+            $this->_formatAsSsml = $format_as_ssml;
+
+            return $this;
+        }
+
+        /**
+         * @param string $name
+         *
+         * @return SayParameters
+         */
+        public function setName ($name) {
+            $this->_name = $name;
 
             return $this;
         }
@@ -104,7 +124,7 @@
          * @return SayParameters
          */
         public function setVoice ($voice) {
-            $this->voice = $voice;
+            $this->_voice = $voice;
 
             return $this;
         }
