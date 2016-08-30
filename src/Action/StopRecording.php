@@ -12,10 +12,9 @@
     namespace Tropo\Action;
 
     /**
-     * Stop an already started recording.
+     * Stops the recording of the current call after startRecording has been called.
      *
-     * @package TropoPHP_Support
-     *
+     * @package Tropo\Action
      */
     class StopRecording extends EmptyBaseClass {
 
