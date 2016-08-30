@@ -1,10 +1,4 @@
 <?php
-    /**
-     * Created by PhpStorm.
-     * User: rjking
-     * Date: 8/1/16
-     * Time: 4:50 PM
-     */
     namespace Tropo\Parameter;
 
     /**
@@ -15,31 +9,31 @@
     class OnParameters {
 
         /** @var string */
-        private $event = null;
+        private $_event = null;
         /** @var string */
-        private $next = null;
+        private $_next = null;
         /** @var \Tropo\Action\Say */
-        private $say = null;
+        private $_say = null;
 
         /**
          * @return string
          */
         public function getEvent () {
-            return $this->event;
+            return $this->_event;
         }
 
         /**
          * @return string
          */
         public function getNext () {
-            return $this->next;
+            return $this->_next;
         }
 
         /**
          * @return \Tropo\Action\Say
          */
         public function getSay () {
-            return $this->say;
+            return $this->_say;
         }
 
         /**
@@ -48,7 +42,7 @@
          * @return OnParameters
          */
         public function setEvent ($event) {
-            $this->event = $event;
+            $this->_event = $event;
 
             return $this;
         }
@@ -59,7 +53,7 @@
          * @return OnParameters
          */
         public function setNext ($next) {
-            $this->next = $next;
+            $this->_next = $next;
 
             return $this;
         }
@@ -70,7 +64,7 @@
          * @return OnParameters
          */
         public function setSay ($say) {
-            $this->say = $say;
+            $this->_say = $say;
 
             return $this;
         }
