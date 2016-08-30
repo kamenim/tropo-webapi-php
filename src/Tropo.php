@@ -12,7 +12,6 @@
     namespace Tropo;
 
     use Exception;
-    use Parameter\StartRecordingParameters;
     use Tropo\Action\Ask;
     use Tropo\Action\BaseClass;
     use Tropo\Action\Choices;
@@ -28,6 +27,7 @@
     use Tropo\Parameter\OnParameters;
     use Tropo\Parameter\RecordParameters;
     use Tropo\Parameter\SayParameters;
+    use Tropo\Parameter\StartRecordingParameters;
 
     /**
      * The main Tropo WebAPI class.
