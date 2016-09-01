@@ -386,7 +386,16 @@
                 $params  = $record;
                 $voice   = !empty($params->getVoice()) ? $params->getVoice() : (isset($this->_voice) ? $this->_voice : null);
                 $choices = !empty($params->getTerminator()) ? new Choices(null, null, $params->getTerminator()) : null;
-                $say     = is_object($params->getSay()) ? $params->getSay() : (!empty($params->getSay()) ? new Say($params->getSay()) : null);
+
+                // If say events were loaded, add them to the Record's say array
+                $say = (!empty($params->getSayEvents())) ? $params->getSayEvents() : array();
+
+                // Add the main Record message to the say array
+                if (is_object($params->getSay())) {
+                    $say[] = $params->getSay();
+                } else if (!empty($params->getSay())) {
+                    $say[] = new Say($params->getSay());
+                }
 
                 $record = new Record(
                     $params->getAttempts(),

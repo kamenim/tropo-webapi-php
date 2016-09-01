@@ -191,10 +191,10 @@
         /**
          * This determines what is played or sent to the caller.
          *
-         * This can be a single object or an array of objects. When say is a part of a record action, it can also take an event key.
+         * An array of say objects. When say is a part of a record action, it can also take an event key.
          * This determines if the prompt will be played based on a particular event; for record, the only possible event is 'timeout'.
          *
-         * @var null|string
+         * @var null|\Tropo\Action\Say[]
          */
         private $_say;
 
@@ -230,7 +230,7 @@
          * after recording is completed, the object returned by the record method has a "value" property that contains
          * a url of a temporary local copy of the file. This temporary copy will be deleted as soon as the call ends.
          *
-         * Please note this needs to be a fully realized URL, i.e. "http://website.com/folder/subfolder" vs "/folder/subfolder".
+         * Please note this needs to be a fully realized URL, i.e. "http://website.com/folder/sub-folder" vs "/folder/sub-folder".
          * If you don't have a complete URL, the file won't send at all or at the very least won't send correctly
          * (0 byte file and similar unusable content).
          *
@@ -267,7 +267,7 @@
          * @param bool            $bargein
          * @param bool            $beep
          * @param Choices         $choices
-         * @param string|Say      $say
+         * @param Say[]           $say
          * @param string          $format
          * @param float           $maxSilence
          * @param float           $maxTime
@@ -289,8 +289,7 @@
             $this->_bargein           = $bargein;
             $this->_beep              = $beep;
             $this->_choices           = !empty($choices) ? sprintf('%s', $choices) : null;
-            $say                      = (!is_object($say) && !empty($say)) ? new Say($say) : $say;
-            $this->_say               = !empty($say) ? sprintf('%s', $say) : null;
+            $this->_say               = !empty($say) ? $say : null;
             $this->_format            = $format;
             $this->_maxSilence        = $maxSilence;
             $this->_maxTime           = $maxTime;
@@ -330,6 +329,11 @@
             }
             if (isset($this->_say)) {
                 $this->say = $this->_say;
+            }
+            if (is_array($this->_say)) {
+                foreach ($this->_say as $k => $v) {
+                    $this->_say[$k] = sprintf('%s', $v);
+                }
             }
             if (isset($this->_format)) {
                 $this->format = $this->_format;

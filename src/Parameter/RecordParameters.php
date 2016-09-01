@@ -3,6 +3,8 @@
 
     use Tropo\Action\Say;
     use Tropo\Action\Transcription;
+    use Tropo\Exception\TropoParameterException;
+    use Tropo\Helper\SayEvent;
 
     /**
      * Contains the parameters for the "Record" action object
@@ -39,6 +41,8 @@
         private $_required;
         /** @var  string|Say */
         private $_say;
+        /** @var \Tropo\Action\Say[] */
+        private $_sayEvents = array();
         /** @var  string */
         private $_terminator;
         /** @var  float */
@@ -51,6 +55,37 @@
         private $_username;
         /** @var  string */
         private $_voice;
+
+        /**
+         * Adds a say event to this Record object.
+         *
+         * @param string|\Tropo\Action\Say $say
+         * @param string                   $event
+         * @param integer|null             $attempt_number
+         * @param string|null              $voice
+         *
+         * @return \Tropo\Parameter\RecordParameters
+         * @throws \Tropo\Exception\TropoParameterException
+         */
+        public function addSayEvent ($say, $event = SayEvent::NO_MATCH, $attempt_number = null, $voice = null) {
+            if (is_object($say)) {
+                $this->_sayEvents[] = $say;
+            } else {
+                if (empty($say)) {
+                    throw new TropoParameterException("Missing say message");
+                }
+                if (empty($event)) {
+                    throw new TropoParameterException("Missing say event");
+                }
+
+                $event = empty($attempt_number) ? $event : sprintf("%s:%d", $event, $attempt_number);
+                $voice = !empty($voice) ? $voice : (!empty($this->_voice) ? $this->_voice : null);
+
+                $this->_sayEvents[] = new Say($say, null, null, null, $voice, $event);
+            }
+
+            return $this;
+        }
 
         /**
          * @return string|string[]
@@ -120,6 +155,13 @@
          */
         public function getSay () {
             return $this->_say;
+        }
+
+        /**
+         * @return \Tropo\Action\Say[]
+         */
+        public function getSayEvents () {
+            return $this->_sayEvents;
         }
 
         /**
