@@ -14,8 +14,11 @@
     use Exception;
     use Tropo\Action\Ask;
     use Tropo\Action\BaseClass;
+    use Tropo\Action\Call;
     use Tropo\Action\Choices;
+    use Tropo\Action\Conference;
     use Tropo\Action\Hangup;
+    use Tropo\Action\Message;
     use Tropo\Action\On;
     use Tropo\Action\Record;
     use Tropo\Action\Say;
@@ -28,6 +31,8 @@
     use Tropo\Parameter\RecordParameters;
     use Tropo\Parameter\SayParameters;
     use Tropo\Parameter\StartRecordingParameters;
+    use Tropo\REST\ProvisioningAPI;
+    use Tropo\REST\SessionAPI;
 
     /**
      * The main Tropo WebAPI class.
