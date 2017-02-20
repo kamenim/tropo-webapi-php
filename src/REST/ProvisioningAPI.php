@@ -24,9 +24,12 @@
         public function __construct ($userid, $password) {
             parent::__construct($userid, $password);
         }
-
+  
         public function setBaseURL ($url) {
+          if ($url)
+          {
             $this->base = $url;
+          }
         }
 
         protected function getBaseURL () {

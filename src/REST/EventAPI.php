@@ -26,6 +26,17 @@
         public function __construct () {
             parent::__construct();
         }
+  
+        public function setBaseURL ($url) {
+          if ($url)
+          {
+            $this->base = $url;
+          }
+        }
+    
+        protected function getBaseURL () {
+          return $this->base;
+        }
 
         /**
          * Send an event into a running Tropo session.
