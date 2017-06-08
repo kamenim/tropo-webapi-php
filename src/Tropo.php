@@ -14,8 +14,11 @@
     use Exception;
     use Tropo\Action\Ask;
     use Tropo\Action\BaseClass;
+    use Tropo\Action\Call;
     use Tropo\Action\Choices;
+    use Tropo\Action\Conference;
     use Tropo\Action\Hangup;
+    use Tropo\Action\Message;
     use Tropo\Action\On;
     use Tropo\Action\Record;
     use Tropo\Action\Say;
@@ -28,6 +31,8 @@
     use Tropo\Parameter\RecordParameters;
     use Tropo\Parameter\SayParameters;
     use Tropo\Parameter\StartRecordingParameters;
+    use Tropo\REST\ProvisioningAPI;
+    use Tropo\REST\SessionAPI;
 
     /**
      * The main Tropo WebAPI class.
@@ -49,14 +54,36 @@
         private $_language;
         /** @var  string  The TTS voice to use when rendering content. */
         private $_voice;
+  
+        /** @var array */
+        private $options = [];
 
         /**
          * Class constructor for the Tropo class.
          *
          * @access private
          */
-        public function __construct () {
-            $this->tropo = array();
+        public function __construct(array $options = [])
+        {
+          $this->tropo = [];
+      
+          $this->setOptions($options);
+        }
+    
+        public function setOptions(array $options)
+        {
+          $this->options = $options;
+        }
+    
+        public function getOption($value = false)
+        {
+          $options = $this->options;
+          if ($value)
+          {
+            $options = $this->options[$value];
+          }
+      
+          return $options;
         }
 
         /**
@@ -234,6 +261,10 @@
             }
             try {
                 $provision = new ProvisioningAPI($userid, $password);
+                if (isset($this->options['base']) && !empty($this->options['base']))
+                {
+                  $provision->setBaseURL($this->options['base']);
+                }
                 $result    = $provision->createApplication($href, $name, $voiceUrl, $messagingUrl, $platform, $partition);
 
                 return $result;
@@ -257,6 +288,11 @@
         public function createSession ($token, Array $params = null) {
             try {
                 $session = new SessionAPI();
+                if (isset($this->options['base']) && !empty($this->options['base']))
+                {
+                  $session->setBaseURL($this->options['base']);
+                }
+  
                 $result  = $session->createSession($token, $params);
 
                 return $result;
@@ -278,7 +314,11 @@
          */
         public function deleteApplication ($userid, $password, $applicationID) {
             $provision = new ProvisioningAPI($userid, $password);
-
+            if (isset($this->options['base']) && !empty($this->options['base']))
+            {
+              $provision->setBaseURL($this->options['base']);
+            }
+  
             return $provision->deleteApplication($applicationID);
         }
 
@@ -297,7 +337,11 @@
          */
         public function deleteApplicationAddress ($userid, $password, $applicationID, $addresstype, $address) {
             $provision = new ProvisioningAPI($userid, $password);
-
+            if (isset($this->options['base']) && !empty($this->options['base']))
+            {
+              $provision->setBaseURL($this->options['base']);
+            }
+          
             return $provision->deleteApplicationAddress($applicationID, $addresstype, $address);
         }
 
@@ -679,6 +723,10 @@
             }
             try {
                 $provision = new ProvisioningAPI($userid, $passwd);
+                if (isset($this->options['base']) && !empty($this->options['base']))
+                {
+                  $provision->setBaseURL($this->options['base']);
+                }
                 $result    = $provision->updateApplicationAddress($applicationID, $type, $prefix, $number, $city, $state, $channel, $username, $password, $token);
 
                 return $result;
@@ -711,7 +759,12 @@
             }
             try {
                 $provision = new ProvisioningAPI($userid, $password);
-                $result    = $provision->updateApplicationProperty($applicationID, $href, $name, $voiceUrl, $messagingUrl, $platform, $partition);
+                if (isset($this->options['base']) && !empty($this->options['base']))
+                {
+                  $provision->setBaseURL($this->options['base']);
+                }
+  
+              $result    = $provision->updateApplicationProperty($applicationID, $href, $name, $voiceUrl, $messagingUrl, $platform, $partition);
 
                 return $result;
             } // If an exception occurs, wrap it in a TropoException and rethrow.
@@ -732,7 +785,11 @@
          */
         public function viewAddresses ($userid, $password, $applicationID) {
             $provision = new ProvisioningAPI($userid, $password);
-
+            if (isset($this->options['base']) && !empty($this->options['base']))
+            {
+              $provision->setBaseURL($this->options['base']);
+            }
+  
             return $provision->viewAddresses($applicationID);
         }
 
@@ -747,7 +804,11 @@
          */
         public function viewApplications ($userid, $password) {
             $provision = new ProvisioningAPI($userid, $password);
-
+            if (isset($this->options['base']) && !empty($this->options['base']))
+            {
+              $provision->setBaseURL($this->options['base']);
+            }
+  
             return $provision->viewApplications();
         }
 
@@ -762,7 +823,11 @@
          */
         public function viewExchanges ($userid, $password) {
             $provision = new ProvisioningAPI($userid, $password);
-
+            if (isset($this->options['base']) && !empty($this->options['base']))
+            {
+              $provision->setBaseURL($this->options['base']);
+            }
+  
             return $provision->viewExchanges();
         }
 
@@ -778,6 +843,10 @@
          */
         public function viewSpecificApplication ($userid, $password, $applicationID) {
             $provision = new ProvisioningAPI($userid, $password);
+            if (isset($this->options['base']) && !empty($this->options['base']))
+            {
+              $provision->setBaseURL($this->options['base']);
+            }
 
             return $provision->viewSpecificApplication($applicationID);
         }
@@ -797,7 +866,6 @@
                 $wait   = new Wait($params["milliseconds"], $signal);
             }
             $this->wait = sprintf('%s', $wait);
-
         }
 
         /**

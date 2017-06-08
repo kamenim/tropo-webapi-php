@@ -29,7 +29,10 @@
         }
 
         public function setBaseURL ($url) {
-            $this->base = $url;
+            if ($url)
+            {
+                $this->base = $url;
+            }
         }
 
         protected function getBaseURL () {
